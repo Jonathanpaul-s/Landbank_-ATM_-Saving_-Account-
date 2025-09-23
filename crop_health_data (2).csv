@@ -1,0 +1,11 @@
+Crop,Temperature (°C),Soil Moisture (%),Health Status
+Maize,30,50,Healthy
+Yam,28,45,Stressed
+Tomato,35,70,Diseased
+Rice,29,55,Healthy
+Cassava,27,40,Stressed
+Tomato,36,75,Diseased
+Maize,31,60,Healthy
+Yam,26,42,Stressed
+Rice,34,72,Diseased
+Cassava,30,52,Healthy

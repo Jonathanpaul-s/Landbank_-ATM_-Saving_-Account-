@@ -1,0 +1,150 @@
+# app.py
+import streamlit as st
+from datetime import datetime
+
+st.set_page_config(page_title="Landbank ATM Card Request", layout="centered")
+
+# --- Helper functions ---
+def init_state():
+    if "balance" not in st.session_state:
+        # default starting balance (demo). User can change this.
+        st.session_state.balance = 0.0
+    if "submitted_requests" not in st.session_state:
+        st.session_state.submitted_requests = []
+
+def show_success(msg):
+    st.success(msg)
+
+def show_error(msg):
+    st.error(msg)
+
+# --- Initialize session state ---
+init_state()
+
+st.title("🌍 Landbank International ATM Card Request (Demo)")
+st.write(
+    """
+    This is a demo application for requesting a Landbank International ATM Saving Card.
+    Requirement to request card: You must have at least $10,000 in your account.
+    (This demo simulates the flow — no real banking actions occur.)
+    """
+)
+
+# Left column: application form
+with st.form("application_form", clear_on_submit=False):
+    st.subheader("Applicant Details")
+    full_name = st.text_input("Full Name", placeholder="John Doe")
+    dob = st.date_input("Date of Birth", value=datetime(1990,1,1))
+    phone = st.text_input("Phone Number", placeholder="+1 234 567 890")
+    email = st.text_input("Email Address", placeholder="you@example.com")
+    employed = st.radio("Are you employed?", ["Yes", "No"], index=1)
+    tin = st.text_input("Tax Identification Number (TIN) — required if employed", placeholder="If employed, enter TIN")
+
+    st.markdown("---")
+    st.subheader("Account & Documents (uploads)")
+    st.write("Please upload the required documents. (This is a demo — files are not stored remotely.)")
+    id_1 = st.file_uploader("Valid Photo ID #1 (passport / national ID / driver's license)", type=["png","jpg","jpeg","pdf"], key="id1")
+    id_2 = st.file_uploader("Valid Photo ID #2 (passport / national ID / driver's license)", type=["png","jpg","jpeg","pdf"], key="id2")
+    proof_of_billing = st.file_uploader("Proof of Billing (utility bill / bank statement)", type=["png","jpg","jpeg","pdf"], key="proof")
+    photo_1 = st.file_uploader("ID Photo #1 (passport-sized)", type=["png","jpg","jpeg"], key="p1")
+    photo_2 = st.file_uploader("ID Photo #2 (passport-sized)", type=["png","jpg","jpeg"], key="p2")
+
+    st.markdown("---")
+    st.subheader("Account Balance (simulation)")
+    # show and let user change session balance
+    balance_input = st.number_input(
+        "Enter your current available balance in USD (simulation):",
+        min_value=0.0,
+        step=50.0,
+        value=float(st.session_state.balance),
+        format="%.2f",
+        key="balance_input"
+    )
+
+    st.markdown("Note: To request the Landbank International ATM card you need at least $10,000 in your account.")
+
+    submitted = st.form_submit_button("Save/Update Application")
+
+# update session balance when form saved
+if submitted:
+    st.session_state.balance = float(balance_input)
+    show_success("Application details saved to session. You can now Request the ATM card (if balance requirement met).")
+
+st.markdown("---")
+
+# Right / next section: Request Card and Top-up simulation
+st.subheader("Request Landbank ATM Saving Card")
+
+col1, col2 = st.columns([2,1])
+
+with col1:
+    st.write(f"Current session balance (simulation): ${st.session_state.balance:,.2f}")
+    min_required = 10000.00
+
+    if st.button("Request Landbank International ATM Card"):
+        # Validate required form fields
+        missing = []
+        if not full_name:
+            missing.append("Full Name")
+        if employed == "Yes" and not tin:
+            missing.append("TIN (required if employed)")
+        # documents
+        if id_1 is None:
+            missing.append("Valid Photo ID #1")
+        if id_2 is None:
+            missing.append("Valid Photo ID #2")
+        if proof_of_billing is None:
+            missing.append("Proof of Billing")
+        if photo_1 is None:
+            m
+        if missing:
+            show_error("Missing required fields/documents: " + ", ".join(missing))
+        else:
+            # check balance
+            if st.session_state.balance < min_required:
+                need = min_required - st.session_state.balance
+                show_error(
+                    f"❌ Error: You must have at least ${min_required:,.2f} in your account before requesting a Landbank ATM Saving Card.\n"
+                    f"Please top up your balance. You need an additional ${need:,.2f}."
+                )
+            else:
+                # simulate successful submission
+                request = {
+                    "name": full_name,
+                    "email": email,
+                    "phone": phone,
+                    "balance": st.session_state.balance,
+                    "requested_at": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
+                    "status": "Submitted"
+                }
+                st.session_state.submitted_requests.append(request)
+                show_success("✅ Success! Your Landbank International ATM card request has been submitted (demo).")
+                st.info("You can simulate viewing submitted requests below.")
+
+with col2:
+    st.write("Quick top-up (simulation)")
+    topup_amount = st.number_input("Top up amount (USD):", min_value=0.0, step=50.0, value=0.0, key="topup")
+    if st.button("Top up balance"):
+        if topup_amount <= 0:
+            show_error("Enter an amount greater than 0 to top up.")
+        else:
+            st.session_state.balance = float(st.session_state.balance) + float(topup_amount)
+            show_success(f"Top up successful (simulation). New balance: ${st.session_state.balance:,.2f}")
+
+st.markdown("---")
+
+# Section: Submitted requests (demo)
+if st.session_state.submitted_requests:
+    st.subheader("Submitted Requests (demo)")
+    for i, r in enumerate(st.session_state.submitted_requests[::-1], start=1):
+        with st.expander(f"{i}. {r['name']} — ${r['balance']:,.2f} — {r['requested_at']}"):
+            st.write(f"Name: {r['name']}")
+            st.write(f"Phone: {r['phone']}")
+            st.write(f"Email: {r['email']}")
+            st.write(f"Submitted at: {r['requested_at']}")
+            st.write(f"Status: {r['status']}")
+
+st.markdown("---")
+st.caption("Demo built for testing UX & flow only. Do NOT use for real banking transactions.") nly. Do NOT use for real banking transactions.")issing.append("ID Photo #1")
+        if photo_2 is None:
+            missing.append("ID Photo #2")

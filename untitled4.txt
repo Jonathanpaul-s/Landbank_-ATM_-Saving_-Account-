@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Landbank ATM Savings Account</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f9f1;
+      color: #222;
+      text-align: center;
+      padding: 40px;
+    }
+    .card {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background: #2e7d32;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #256428;
+    }
+    .message {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    .error {
+      color: red;
+    }
+    .success {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>🌍 Landbank International ATM Request</h2>
+    <p>Minimum Balance Required: <strong>$10,000</strong></p>
+
+    <label for="balance">Enter Your Current Balance ($):</label>
+    <input type="number" id="balance" placeholder="Enter your balance" required>
+
+    <button onclick="requestCard()">Request ATM Card</button>
+
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    function requestCard() {
+      let balance = document.getElementById("balance").value;
+      let messageDiv = document.getElementById("message");
+
+      if (!balance || balance <= 0) {
+        messageDiv.innerHTML = "⚠️ Please enter a valid balance.";
+        messageDiv.className = "message error";
+        return;
+      }
+
+      if (balance < 10000) {
+        messageDiv.innerHTML = "❌ Error: You must have at least $10,000 in your account before requesting a Landbank ATM Saving Card. Please top up your balance.";
+        messageDiv.className = "message error";
+      } else {
+        messageDiv.innerHTML = "✅ Success! Your Landbank International ATM card request has been submitted.";
+        messageDiv.className = "message success";
+      }
+    }
+  </script>
+
+</body>
+</html>
