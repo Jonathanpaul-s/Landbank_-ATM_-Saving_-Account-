@@ -1,24 +1,11 @@
-﻿# Python
-pycache/
-*.py[cod]
-venv/
-env/
-.venv/
-
-# Jupyter
+﻿crop_disease_detector/
 .ipynb_checkpoints/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Python package installs
-dist/
-build/
-*.egg-info/
-
-# secrets / local config
-*.env
-secrets.json
-
-# Git LFS track separately if used
+AppData/
+.keras/
+.ipython/
+pycache/
+*.csv
+*.h5
+*.pkl
+*.db
+*.pyc
